@@ -1,66 +1,61 @@
-# VoxClone v1.1
+# VoxClone v1.2
 
-**Aplicación web moderna y profesional** para clonación de voz neural, texto a voz y voz a voz.
+Aplicación web modular (HTML/CSS/JS) para **clonación de voz neural**, TTS y voz a voz.
 
-- HTML + CSS + JavaScript **modularizado** (ES Modules)
-- Tema claro / oscuro / sistema
-- Altamente responsiva + **PWA instalable**
-- Soporte prioritario de **Español Mexicano y Latinoamericano**
-- Arquitectura lista para **clonación neural de alta calidad**
+- Tema claro/oscuro · PWA · Responsive
+- Español Mexicano / Latino por defecto
+- Motores: Sistema · **Backend XTTS** · **VoxShot (navegador)** · **FakeYou**
 
-## Idiomas / Acentos
+## Motores
 
-| Código   | Descripción                  |
-|----------|------------------------------|
-| es-MX    | Español (México) — por defecto |
-| es-419   | Español (Latinoamérica)      |
-| es-AR    | Español (Argentina)          |
-| es-CO    | Español (Colombia)           |
-| es-CL    | Español (Chile)              |
-| es-PE    | Español (Perú)               |
-| es-ES    | Español (España)             |
-| + en, pt-BR, fr, de            |
+| Motor | Calidad | Privacidad | Notas |
+|-------|---------|------------|-------|
+| Sistema | Básica | Total | Demo Web Speech |
+| **Backend XTTS** | Excelente | Total (local) | Recomendado. Carpeta `/backend` |
+| **VoxShot** | Muy buena | Total | WebGPU, primera vez descarga modelos |
+| FakeYou | Variable | Nube | Miles de voces de comunidad. Rate-limit. Solo entretenimiento |
 
-**Importante**: En los motores neurales (XTTS, Chatterbox…) el **acento** lo determina principalmente la **muestra de voz de referencia**. Usa un audio de un hablante mexicano para obtener un acento mexicano, aunque el idioma del modelo sea simplemente `es`.
+### Acento mexicano / latino
+En XTTS y VoxShot el **acento lo da la muestra de audio**. Usa 6–20 s limpios de un hablante mexicano (u otro país) para ese acento. El código de idioma suele ser solo `es`.
 
-## Motores de clonación neural
-
-En el panel **Clonar Voz** puedes elegir:
-
-1. **Sistema (Web Speech)** — Demo rápido, sin clonación real.
-2. **Backend local** — Recomendado para máxima calidad.
-   - Conecta a **Coqui XTTS v2**, **Chatterbox**, **Mimicry**, etc.
-   - Endpoint esperado: `POST` multipart con `text`, `language`, `speaker_wav`.
-   - Ejemplo de repos estables:
-     - [Mimicry (XTTS)](https://github.com/rishav-jha-mech/mimicry)
-     - [Qwen3-TTS Voice Clone](https://github.com/ammosu/qwen3-tts-voice-clone)
-     - RVC-Project + XTTS wrappers
-3. **Navegador (VoxShot / Transformers.js)** — 100 % client-side con WebGPU.
-   - Librerías: [voxshot](https://github.com/m96-chan/voxshot), Chatterbox ONNX demos.
-   - Primera carga descarga ~0.5–1.5 GB (luego cacheado).
-
-### Recomendaciones 2026 para español latino
-
-| Motor              | Calidad | Acento Latino | Notas |
-|--------------------|---------|---------------|-------|
-| **XTTS v2**        | Excelente | Muy bueno (según muestra) | Más maduro, 17 idiomas, zero-shot 6 s |
-| **Chatterbox Multilingual** | Excelente | Finetunes LatAm / España | Alta naturalidad, MIT |
-| **VoxShot + Chatterbox ONNX** | Muy buena | Según modelo | Corre en el navegador |
-| Qwen3-TTS          | Muy buena | Bueno | Voice design + clone |
-
-## Cómo usar
+## Backend mínimo FastAPI + XTTS
 
 ```bash
-# Servir (necesario para micrófono y PWA)
-npx serve voxclone
-# o
-python -m http.server 8080 --directory voxclone
+cd backend
+python -m venv .venv
+source .venv/bin/activate   # Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+uvicorn server:app --host 0.0.0.0 --port 8000
 ```
 
-1. Abre la app → panel **Clonar Voz**.
-2. Elige el motor (Backend recomendado para producción).
-3. Graba o sube 6–20 s de audio limpio de la voz objetivo.
-4. Escribe el texto y genera.
+En la app: motor **Backend local**, URL `http://localhost:8000/tts`.
+
+GPU recomendada. La primera ejecución descarga XTTS v2.
+
+## VoxShot en el frontend
+
+Para el motor **Navegador**:
+
+```bash
+npm init -y
+npm install voxshot @huggingface/transformers
+# Sirve con Vite o similar para que el import "voxshot" resuelva
+```
+
+O usa el intento de carga por CDN incluido (puede fallar por CORS/versión).  
+La UI muestra progreso de descarga/síntesis.
+
+## FakeYou (como en la captura)
+
+Sí se puede integrar algo similar a [FakeYou](https://fakeyou.com/tts):
+
+1. Elige motor **FakeYou**.
+2. Obtén un `model_token` (lista pública: `https://api.fakeyou.com/tts/list`).
+3. Pégalo en el campo y genera.
+
+**Limitaciones**: rate-limit por IP, colas, muchas voces son de celebridades/personajes (úsalo solo con fines legítimos y de entretenimiento). No es un clonador zero-shot de tu propia voz; es una biblioteca de modelos ya entrenados.
+
+Para un clonador propio estilo FakeYou + F5-TTS zero-shot, combina el backend XTTS (o F5) con la UI de VoxClone.
 
 ## Estructura
 
@@ -68,34 +63,18 @@ python -m http.server 8080 --directory voxclone
 voxclone/
 ├── index.html
 ├── css/styles.css
-├── js/
-│   ├── main.js
-│   └── modules/
-│       ├── theme.js
-│       ├── storage.js
-│       ├── tts.js
-│       ├── recorder.js
-│       ├── stt.js
-│       ├── ui.js
-│       └── neural.js      ← motores de clonación
-├── icons/
-├── manifest.json
-├── sw.js
+├── js/main.js
+├── js/modules/
+│   ├── neural.js      ← VoxShot + FakeYou + backend
+│   ├── tts.js, recorder.js, stt.js, theme.js, storage.js, ui.js
+├── backend/
+│   ├── server.py      ← FastAPI + XTTS mínimo
+│   └── requirements.txt
+├── icons/, manifest.json, sw.js
 └── README.md
 ```
 
-## Extender el motor del navegador
+## Ética
 
-```js
-// Ejemplo conceptual con voxshot (requiere npm + build o importmap)
-import { VoxShot } from "voxshot";
-const tts = await VoxShot.create();
-await tts.cloneVoice(referenceFile);
-const audio = await tts.speak("Hola, esta es mi voz clonada en español mexicano.");
-await audio.play();
-```
-
-## Licencia y ética
-
-Código libre para uso personal y educativo.  
-**Solo clona voces con permiso explícito.** Respeta derechos de imagen y voz.
+Solo clona voces con **permiso explícito**.  
+FakeYou y modelos de celebridades tienen restricciones legales y de uso.

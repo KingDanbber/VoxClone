@@ -154,8 +154,9 @@
               <label class="label" for="neuralEngine">Motor de clonación neural</label>
               <select id="neuralEngine" class="select">
                 <option value="system">Sistema (Web Speech) — demo rápido</option>
-                <option value="backend">Backend local (XTTS / Chatterbox / Mimicry)</option>
-                <option value="browser">Navegador (VoxShot / Transformers.js) — requiere WebGPU</option>
+                <option value="backend">Backend local (XTTS FastAPI) — recomendado</option>
+                <option value="browser">Navegador (VoxShot) — WebGPU, 100% local</option>
+                <option value="fakeyou">FakeYou (nube) — miles de voces de comunidad</option>
               </select>
               <p class="hint" id="engineHint" style="margin-top:8px">Recomendado para español latino: XTTS v2 o Chatterbox Multilingual con muestra de hablante mexicano/argentino/etc.</p>
             </div>
@@ -199,8 +200,13 @@
                   <h3>Generar con la voz clonada</h3>
                   <textarea id="cloneText" class="textarea" rows="3" placeholder="Escribe el texto que quieres escuchar con la voz clonada..."></textarea>
                   <div id="backendConfig" class="hidden" style="margin-top:12px">
-                    <label class="label" for="backendUrl">URL del backend (FastAPI / Gradio / XTTS)</label>
+                    <label class="label" for="backendUrl">URL del backend (FastAPI / XTTS)</label>
                     <input type="url" id="backendUrl" class="input" placeholder="http://localhost:8000/tts" value="http://localhost:8000/tts" />
+                  </div>
+                  <div id="fakeyouConfig" class="hidden" style="margin-top:12px">
+                    <label class="label" for="fakeyouToken">FakeYou model_token</label>
+                    <input type="text" id="fakeyouToken" class="input" placeholder="TM:xxxxxxxx (busca en api.fakeyou.com/tts/list)" />
+                    <p class="hint">Solo para entretenimiento. Respeta derechos de las voces. API pública con rate-limit.</p>
                   </div>
                   <div class="actions mt-3">
                     <button id="cloneGenerateBtn" class="btn btn-primary" disabled>
