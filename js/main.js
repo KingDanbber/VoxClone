@@ -249,18 +249,18 @@ function initClonePanel() {
 
   function updateEngineUI() {
     const eng = engineSelect?.value || "system";
-    if (backendConfig) {
-      backendConfig.classList.toggle("hidden", eng !== "backend");
-    }
+    const fakeyouConfig = document.getElementById("fakeyouConfig");
+    if (backendConfig) backendConfig.classList.toggle("hidden", eng !== "backend");
+    if (fakeyouConfig) fakeyouConfig.classList.toggle("hidden", eng !== "fakeyou");
     if (engineHint) engineHint.textContent = getEngineDescription(eng);
     if (cloneHint) {
-      if (eng === "system") {
-        cloneHint.textContent = "Modo Sistema: síntesis del navegador (demo). Cambia a Backend para calidad neural real.";
-      } else if (eng === "backend") {
-        cloneHint.textContent = "Envía muestra + texto a tu servidor XTTS/Chatterbox. Asegúrate de que el endpoint acepte multipart/form-data.";
-      } else {
-        cloneHint.textContent = "Para motor en navegador instala VoxShot o carga Chatterbox ONNX con Transformers.js (ver README).";
-      }
+      const hints = {
+        system: "Modo Sistema: síntesis del navegador (demo).",
+        backend: "Usa el backend de /backend (FastAPI + XTTS). Endpoint POST /tts con text, language, speaker_wav.",
+        browser: "VoxShot en el dispositivo. Primera vez descarga modelos. Requiere Chrome/Edge + WebGPU.",
+        fakeyou: "Pega un model_token de FakeYou. No necesita muestra de audio. Rate-limited.",
+      };
+      cloneHint.textContent = hints[eng] || "";
     }
   }
 
@@ -273,13 +273,14 @@ function initClonePanel() {
       showToast("Escribe el texto a generar");
       return;
     }
-    if (!currentSample && (engineSelect?.value === "backend" || engineSelect?.value === "browser")) {
+
+    const engine = engineSelect?.value || "system";
+    if (!currentSample && (engine === "backend" || engine === "browser")) {
       showToast("Primero captura o sube una muestra de voz");
       return;
     }
 
     const name = voiceNameInput.value.trim() || "Voz clonada";
-    const engine = engineSelect?.value || "system";
     const backendUrl = document.getElementById("backendUrl")?.value?.trim();
 
     // Save voice metadata
@@ -302,6 +303,8 @@ function initClonePanel() {
         backendUrl,
         lang: getSettings().lang,
         voiceName: name,
+        fakeyouModelToken: document.getElementById("fakeyouToken")?.value?.trim(),
+        onProgress: (msg) => showToast(msg, 4000),
       });
 
       addHistoryItem({
