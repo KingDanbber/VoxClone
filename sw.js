@@ -2,7 +2,7 @@
  * VoxClone Service Worker — offline cache + PWA
  */
 
-const CACHE_NAME = "voxclone-v1.0.0";
+const CACHE_NAME = "voxclone-v1.1.0";
 const ASSETS = [
   "./",
   "./index.html",
@@ -14,6 +14,7 @@ const ASSETS = [
   "./js/modules/recorder.js",
   "./js/modules/stt.js",
   "./js/modules/ui.js",
+  "./js/modules/neural.js",
   "./manifest.json",
   "./icons/icon.svg",
 ];
@@ -41,7 +42,6 @@ self.addEventListener("fetch", (event) => {
 
       return fetch(event.request)
         .then((response) => {
-          // Cache successful same-origin responses
           if (response.ok && event.request.url.startsWith(self.location.origin)) {
             const clone = response.clone();
             caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
@@ -49,7 +49,6 @@ self.addEventListener("fetch", (event) => {
           return response;
         })
         .catch(() => {
-          // Offline fallback for navigation
           if (event.request.mode === "navigate") {
             return caches.match("./index.html");
           }

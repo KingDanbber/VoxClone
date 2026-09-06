@@ -146,15 +146,26 @@
         <section id="panel-clone" class="panel" role="tabpanel" hidden>
           <div class="panel-header">
             <h2>Clonar Voz</h2>
-            <p class="panel-desc">Graba o sube una muestra de 5–20 segundos. Luego genera cualquier texto con esa voz (modo demo + preparación para modelos avanzados).</p>
+            <p class="panel-desc">Clonación zero-shot de alta calidad. Usa una muestra limpia de 6–20 s. El acento (mexicano, argentino, etc.) lo determina principalmente el audio de referencia.</p>
           </div>
 
           <div class="card">
+            <div class="control-group" style="margin-bottom:20px">
+              <label class="label" for="neuralEngine">Motor de clonación neural</label>
+              <select id="neuralEngine" class="select">
+                <option value="system">Sistema (Web Speech) — demo rápido</option>
+                <option value="backend">Backend local (XTTS / Chatterbox / Mimicry)</option>
+                <option value="browser">Navegador (VoxShot / Transformers.js) — requiere WebGPU</option>
+              </select>
+              <p class="hint" id="engineHint" style="margin-top:8px">Recomendado para español latino: XTTS v2 o Chatterbox Multilingual con muestra de hablante mexicano/argentino/etc.</p>
+            </div>
+
             <div class="clone-steps">
               <div class="step" data-step="1">
                 <div class="step-num">1</div>
                 <div class="step-content">
-                  <h3>Capturar muestra de voz</h3>
+                  <h3>Capturar muestra de voz (6–20 s limpios)</h3>
+                  <p class="hint" style="margin-bottom:10px">Consejos de calidad: sin ruido de fondo, habla natural, misma lengua del texto, preferible WAV/MP3 de buena calidad.</p>
                   <div class="record-zone" id="recordZone">
                     <button id="recordBtn" class="btn-record" aria-label="Grabar muestra">
                       <span class="record-dot"></span>
@@ -178,7 +189,7 @@
                 <div class="step-num">2</div>
                 <div class="step-content">
                   <h3>Nombre de la voz</h3>
-                  <input type="text" id="voiceName" class="input" placeholder="Ej: Mi voz, Narrador, Personaje..." maxlength="40" />
+                  <input type="text" id="voiceName" class="input" placeholder="Ej: Narrador MX, Personaje, Mi voz..." maxlength="40" />
                 </div>
               </div>
 
@@ -187,13 +198,17 @@
                 <div class="step-content">
                   <h3>Generar con la voz clonada</h3>
                   <textarea id="cloneText" class="textarea" rows="3" placeholder="Escribe el texto que quieres escuchar con la voz clonada..."></textarea>
+                  <div id="backendConfig" class="hidden" style="margin-top:12px">
+                    <label class="label" for="backendUrl">URL del backend (FastAPI / Gradio / XTTS)</label>
+                    <input type="url" id="backendUrl" class="input" placeholder="http://localhost:8000/tts" value="http://localhost:8000/tts" />
+                  </div>
                   <div class="actions mt-3">
                     <button id="cloneGenerateBtn" class="btn btn-primary" disabled>
                       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>
                       Generar con voz clonada
                     </button>
                   </div>
-                  <p class="hint">Nota: En modo demo se usa la síntesis del sistema ajustada. Para clonación neural real (XTTS, Chatterbox, VoxShot…) conecta un backend o carga el modelo en el navegador.</p>
+                  <p class="hint" id="cloneHint">Modo Sistema: síntesis del navegador. Cambia a Backend o Navegador para calidad neural real.</p>
                 </div>
               </div>
             </div>
@@ -284,9 +299,13 @@
                 <p class="setting-desc">Para reconocimiento y síntesis</p>
               </div>
               <select id="langSelect" class="select select-sm">
-                <option value="es-ES">Español (España)</option>
                 <option value="es-MX">Español (México)</option>
+                <option value="es-419">Español (Latinoamérica)</option>
                 <option value="es-AR">Español (Argentina)</option>
+                <option value="es-CO">Español (Colombia)</option>
+                <option value="es-CL">Español (Chile)</option>
+                <option value="es-PE">Español (Perú)</option>
+                <option value="es-ES">Español (España)</option>
                 <option value="en-US">English (US)</option>
                 <option value="en-GB">English (UK)</option>
                 <option value="pt-BR">Português (Brasil)</option>
@@ -318,8 +337,12 @@
           <div class="card mt-4 about-card">
             <h3>Acerca de VoxClone</h3>
             <p>Aplicación web modular (HTML + CSS + JS) para clonación de voz, TTS y voz a voz. Diseñada para ser moderna, profesional y adaptable a cualquier dispositivo.</p>
-            <p class="version">v1.0.0 · PWA · 100% client-side (modo demo)</p>
-            <p class="hint">Para clonación neural de alta fidelidad integra modelos como Coqui XTTS, Chatterbox, VoxShot o RVC mediante backend o Transformers.js.</p>
+            <p class="version">v1.1.0 · PWA · Neural-ready</p>
+            <p class="hint"><strong>Motores recomendados para español latino:</strong><br>
+            • <strong>XTTS v2 (Coqui)</strong> — excelente zero-shot, 17 idiomas, acento según muestra (México, Argentina…)<br>
+            • <strong>Chatterbox Multilingual</strong> — finetunes específicos LatAm / España, alta naturalidad<br>
+            • <strong>VoxShot + Transformers.js</strong> — 100 % en el navegador (WebGPU)<br>
+            El acento mexicano / latino se obtiene principalmente con una muestra de voz de esa región.</p>
           </div>
         </section>
       </main>
