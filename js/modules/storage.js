@@ -10,10 +10,10 @@ export function getSettings() {
   try {
     return JSON.parse(localStorage.getItem(SETTINGS_KEY)) || {
       saveHistory: true,
-      lang: "es-ES",
+      lang: "es-MX",
     };
   } catch {
-    return { saveHistory: true, lang: "es-ES" };
+    return { saveHistory: true, lang: "es-MX" };
   }
 }
 
