@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="system">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=5" />
+  <meta name="description" content="VoxClone — Clonación de voz profesional, texto a voz y voz a voz en el navegador. Moderna, privada y potente." />
+  <meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#f8fafc" media="(prefers-color-scheme: light)" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="VoxClone" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/svg+xml" href="icons/icon.svg" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <title>VoxClone — Clonación de Voz Profesional</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <div id="app" class="app">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-inner">
+        <div class="brand">
+          <div class="logo" aria-hidden="true">
+            <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="40" height="40" rx="10" fill="url(#logoGrad)"/>
+              <path d="M12 20c0-4.4 3.6-8 8-8s8 3.6 8 8-3.6 8-8 8" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/>
+              <circle cx="20" cy="20" r="3" fill="#fff"/>
+              <defs>
+                <linearGradient id="logoGrad" x1="0" y1="0" x2="40" y2="40">
+                  <stop stop-color="#6366f1"/>
+                  <stop offset="1" stop-color="#a855f7"/>
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
+          <div class="brand-text">
+            <h1>VoxClone</h1>
+            <span class="tagline">Clonación de voz profesional</span>
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <button id="themeToggle" class="btn-icon" aria-label="Cambiar tema" title="Tema claro / oscuro">
+            <svg class="icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+            </svg>
+            <svg class="icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>
+          </button>
+          <button id="installBtn" class="btn-install hidden" aria-label="Instalar aplicación">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+            </svg>
+            <span>Instalar</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Layout -->
+    <div class="layout">
+      <!-- Sidebar / Nav -->
+      <nav class="sidebar" id="sidebar" aria-label="Navegación principal">
+        <ul class="nav-list">
+          <li>
+            <button class="nav-item active" data-panel="tts" aria-current="page">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4M8 23h8"/></svg>
+              <span>Texto a Voz</span>
+            </button>
+          </li>
+          <li>
+            <button class="nav-item" data-panel="clone">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              <span>Clonar Voz</span>
+            </button>
+          </li>
+          <li>
+            <button class="nav-item" data-panel="voice2voice">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><path d="M12 19v4M8 23h8"/><path d="M17 8h4M19 6v4"/></svg>
+              <span>Voz a Voz</span>
+            </button>
+          </li>
+          <li>
+            <button class="nav-item" data-panel="library">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+              <span>Biblioteca</span>
+            </button>
+          </li>
+          <li>
+            <button class="nav-item" data-panel="settings">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+              <span>Ajustes</span>
+            </button>
+          </li>
+        </ul>
+      </nav>
+
+      <!-- Content Area -->
+      <main class="content">
+        <!-- Panel: Texto a Voz -->
+        <section id="panel-tts" class="panel active" role="tabpanel">
+          <div class="panel-header">
+            <h2>Texto a Voz</h2>
+            <p class="panel-desc">Convierte texto en voz natural con las voces del sistema o tu voz clonada.</p>
+          </div>
+
+          <div class="card">
+            <label class="label" for="ttsText">Texto a sintetizar</label>
+            <textarea id="ttsText" class="textarea" rows="5" placeholder="Escribe o pega aquí el texto que quieres convertir en voz..." maxlength="5000"></textarea>
+            <div class="char-count"><span id="ttsCharCount">0</span> / 5000</div>
+          </div>
+
+          <div class="card controls-grid">
+            <div class="control-group">
+              <label class="label" for="voiceSelect">Voz</label>
+              <select id="voiceSelect" class="select"></select>
+            </div>
+            <div class="control-group">
+              <label class="label" for="rateRange">Velocidad <span id="rateValue">1.0</span></label>
+              <input type="range" id="rateRange" class="range" min="0.5" max="2" step="0.1" value="1" />
+            </div>
+            <div class="control-group">
+              <label class="label" for="pitchRange">Tono <span id="pitchValue">1.0</span></label>
+              <input type="range" id="pitchRange" class="range" min="0.5" max="2" step="0.1" value="1" />
+            </div>
+          </div>
+
+          <div class="actions">
+            <button id="ttsSpeakBtn" class="btn btn-primary">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              Generar y Reproducir
+            </button>
+            <button id="ttsStopBtn" class="btn btn-secondary" disabled>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="6" width="12" height="12" rx="1"/></svg>
+              Detener
+            </button>
+          </div>
+        </section>
+
+        <!-- Panel: Clonar Voz -->
+        <section id="panel-clone" class="panel" role="tabpanel" hidden>
+          <div class="panel-header">
+            <h2>Clonar Voz</h2>
+            <p class="panel-desc">Graba o sube una muestra de 5–20 segundos. Luego genera cualquier texto con esa voz (modo demo + preparación para modelos avanzados).</p>
+          </div>
+
+          <div class="card">
+            <div class="clone-steps">
+              <div class="step" data-step="1">
+                <div class="step-num">1</div>
+                <div class="step-content">
+                  <h3>Capturar muestra de voz</h3>
+                  <div class="record-zone" id="recordZone">
+                    <button id="recordBtn" class="btn-record" aria-label="Grabar muestra">
+                      <span class="record-dot"></span>
+                      <span class="record-text">Grabar</span>
+                    </button>
+                    <span class="or">o</span>
+                    <label class="btn btn-secondary file-label">
+                      <input type="file" id="audioUpload" accept="audio/*,.wav,.mp3,.ogg,.m4a,.webm" hidden />
+                      Subir audio
+                    </label>
+                  </div>
+                  <div id="recordingStatus" class="status-msg hidden"></div>
+                  <div id="samplePreview" class="audio-preview hidden">
+                    <audio id="sampleAudio" controls></audio>
+                    <button id="clearSampleBtn" class="btn-text">Eliminar muestra</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="step" data-step="2">
+                <div class="step-num">2</div>
+                <div class="step-content">
+                  <h3>Nombre de la voz</h3>
+                  <input type="text" id="voiceName" class="input" placeholder="Ej: Mi voz, Narrador, Personaje..." maxlength="40" />
+                </div>
+              </div>
+
+              <div class="step" data-step="3">
+                <div class="step-num">3</div>
+                <div class="step-content">
+                  <h3>Generar con la voz clonada</h3>
+                  <textarea id="cloneText" class="textarea" rows="3" placeholder="Escribe el texto que quieres escuchar con la voz clonada..."></textarea>
+                  <div class="actions mt-3">
+                    <button id="cloneGenerateBtn" class="btn btn-primary" disabled>
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>
+                      Generar con voz clonada
+                    </button>
+                  </div>
+                  <p class="hint">Nota: En modo demo se usa la síntesis del sistema ajustada. Para clonación neural real (XTTS, Chatterbox, VoxShot…) conecta un backend o carga el modelo en el navegador.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Panel: Voz a Voz -->
+        <section id="panel-voice2voice" class="panel" role="tabpanel" hidden>
+          <div class="panel-header">
+            <h2>Voz a Voz</h2>
+            <p class="panel-desc">Habla y convierte tu voz en tiempo real (transcripción + resíntesis).</p>
+          </div>
+
+          <div class="card v2v-card">
+            <div class="v2v-visual" id="v2vVisual">
+              <div class="wave-bars" id="waveBars">
+                <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+              </div>
+              <p id="v2vStatus">Presiona el micrófono para empezar</p>
+            </div>
+
+            <button id="v2vToggleBtn" class="btn-mic" aria-label="Iniciar / detener reconocimiento">
+              <svg class="mic-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4M8 23h8"/>
+              </svg>
+            </button>
+
+            <div class="transcript-box">
+              <label class="label">Transcripción en vivo</label>
+              <div id="liveTranscript" class="transcript" aria-live="polite"></div>
+            </div>
+
+            <div class="actions">
+              <button id="v2vSpeakBtn" class="btn btn-primary" disabled>
+                Reproducir con voz seleccionada
+              </button>
+              <button id="v2vClearBtn" class="btn btn-secondary">Limpiar</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Panel: Biblioteca -->
+        <section id="panel-library" class="panel" role="tabpanel" hidden>
+          <div class="panel-header">
+            <h2>Biblioteca</h2>
+            <p class="panel-desc">Voces guardadas y generaciones recientes.</p>
+          </div>
+
+          <div class="card">
+            <h3 class="card-title">Voces clonadas</h3>
+            <div id="savedVoices" class="list-empty">
+              <p>No hay voces guardadas todavía.</p>
+            </div>
+          </div>
+
+          <div class="card mt-4">
+            <h3 class="card-title">Historial de generación</h3>
+            <div id="historyList" class="list-empty">
+              <p>El historial aparecerá aquí.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Panel: Ajustes -->
+        <section id="panel-settings" class="panel" role="tabpanel" hidden>
+          <div class="panel-header">
+            <h2>Ajustes</h2>
+            <p class="panel-desc">Preferencias de la aplicación.</p>
+          </div>
+
+          <div class="card settings-list">
+            <div class="setting-row">
+              <div>
+                <strong>Tema</strong>
+                <p class="setting-desc">Claro, oscuro o seguir al sistema</p>
+              </div>
+              <select id="themeSelect" class="select select-sm">
+                <option value="system">Sistema</option>
+                <option value="light">Claro</option>
+                <option value="dark">Oscuro</option>
+              </select>
+            </div>
+
+            <div class="setting-row">
+              <div>
+                <strong>Idioma preferido</strong>
+                <p class="setting-desc">Para reconocimiento y síntesis</p>
+              </div>
+              <select id="langSelect" class="select select-sm">
+                <option value="es-ES">Español (España)</option>
+                <option value="es-MX">Español (México)</option>
+                <option value="es-AR">Español (Argentina)</option>
+                <option value="en-US">English (US)</option>
+                <option value="en-GB">English (UK)</option>
+                <option value="pt-BR">Português (Brasil)</option>
+                <option value="fr-FR">Français</option>
+                <option value="de-DE">Deutsch</option>
+              </select>
+            </div>
+
+            <div class="setting-row">
+              <div>
+                <strong>Guardar historial</strong>
+                <p class="setting-desc">Almacenar generaciones localmente</p>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="saveHistoryToggle" checked />
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <div class="setting-row">
+              <div>
+                <strong>Datos locales</strong>
+                <p class="setting-desc">Borrar voces e historial</p>
+              </div>
+              <button id="clearDataBtn" class="btn btn-danger btn-sm">Borrar todo</button>
+            </div>
+          </div>
+
+          <div class="card mt-4 about-card">
+            <h3>Acerca de VoxClone</h3>
+            <p>Aplicación web modular (HTML + CSS + JS) para clonación de voz, TTS y voz a voz. Diseñada para ser moderna, profesional y adaptable a cualquier dispositivo.</p>
+            <p class="version">v1.0.0 · PWA · 100% client-side (modo demo)</p>
+            <p class="hint">Para clonación neural de alta fidelidad integra modelos como Coqui XTTS, Chatterbox, VoxShot o RVC mediante backend o Transformers.js.</p>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- Mobile Bottom Nav -->
+    <nav class="bottom-nav" aria-label="Navegación móvil">
+      <button class="bottom-item active" data-panel="tts">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4M8 23h8"/></svg>
+        <span>TTS</span>
+      </button>
+      <button class="bottom-item" data-panel="clone">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <span>Clonar</span>
+      </button>
+      <button class="bottom-item" data-panel="voice2voice">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/></svg>
+        <span>Voz→Voz</span>
+      </button>
+      <button class="bottom-item" data-panel="library">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        <span>Lib</span>
+      </button>
+      <button class="bottom-item" data-panel="settings">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        <span>Ajustes</span>
+      </button>
+    </nav>
+
+    <!-- Toast -->
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  </div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
