@@ -37,6 +37,7 @@ import {
   initNavigation,
   renderLibrary,
 } from "./modules/ui.js";
+import { generateClonedSpeech, getEngineDescription } from "./modules/neural.js";
 
 // ---------- State ----------
 let currentSample = null; // { blob, url, mimeType }
@@ -241,49 +242,78 @@ function initClonePanel() {
     }
   }
 
+  const engineSelect = document.getElementById("neuralEngine");
+  const backendConfig = document.getElementById("backendConfig");
+  const engineHint = document.getElementById("engineHint");
+  const cloneHint = document.getElementById("cloneHint");
+
+  function updateEngineUI() {
+    const eng = engineSelect?.value || "system";
+    if (backendConfig) {
+      backendConfig.classList.toggle("hidden", eng !== "backend");
+    }
+    if (engineHint) engineHint.textContent = getEngineDescription(eng);
+    if (cloneHint) {
+      if (eng === "system") {
+        cloneHint.textContent = "Modo Sistema: síntesis del navegador (demo). Cambia a Backend para calidad neural real.";
+      } else if (eng === "backend") {
+        cloneHint.textContent = "Envía muestra + texto a tu servidor XTTS/Chatterbox. Asegúrate de que el endpoint acepte multipart/form-data.";
+      } else {
+        cloneHint.textContent = "Para motor en navegador instala VoxShot o carga Chatterbox ONNX con Transformers.js (ver README).";
+      }
+    }
+  }
+
+  engineSelect?.addEventListener("change", updateEngineUI);
+  updateEngineUI();
+
   generateBtn?.addEventListener("click", async () => {
     const text = cloneText.value.trim();
     if (!text) {
       showToast("Escribe el texto a generar");
       return;
     }
-    if (!currentSample) {
+    if (!currentSample && (engineSelect?.value === "backend" || engineSelect?.value === "browser")) {
       showToast("Primero captura o sube una muestra de voz");
       return;
     }
 
     const name = voiceNameInput.value.trim() || "Voz clonada";
+    const engine = engineSelect?.value || "system";
+    const backendUrl = document.getElementById("backendUrl")?.value?.trim();
 
-    // Save voice metadata (demo — real neural cloning would extract embeddings here)
+    // Save voice metadata
     const voiceId = crypto.randomUUID();
     saveVoice({
       id: voiceId,
       name,
       createdAt: Date.now(),
-      // In a real implementation we would store the embedding or reference audio securely
+      engine,
     });
 
     generateBtn.disabled = true;
-    showToast("Generando (modo demo con síntesis del sistema)…");
+    showToast(engine === "system" ? "Generando (demo sistema)…" : "Generando con motor neural…");
 
     try {
-      // Demo: use system TTS with slightly adjusted pitch to simulate "cloned" feel
-      // Real apps would send sample + text to XTTS / Chatterbox / VoxShot
-      await speak(text, {
-        rate: 1,
-        pitch: 1.05,
+      const result = await generateClonedSpeech({
+        text,
+        sampleBlob: currentSample?.blob || null,
+        engine,
+        backendUrl,
         lang: getSettings().lang,
+        voiceName: name,
       });
 
       addHistoryItem({
-        type: "Clonación (demo)",
+        type: `Clonación (${result.mode})`,
         text: text.slice(0, 200),
         voiceName: name,
       });
       renderLibrary();
-      showToast(`Generado con «${name}» (demo). Para clonación neural real integra un modelo.`);
+      showToast(result.message || `Generado con «${name}»`);
     } catch (err) {
       showToast("Error: " + (err.message || err));
+      console.error(err);
     } finally {
       generateBtn.disabled = false;
     }
